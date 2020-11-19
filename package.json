@@ -1,0 +1,27 @@
+{
+  "name": "ToDoList",
+  "version": "1.0.0",
+  "description": "A simple to-do list that utilizes local storage",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "watch": "webpack --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AndrewLeach94/ToDoList.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AndrewLeach94/ToDoList/issues"
+  },
+  "homepage": "https://github.com/AndrewLeach94/ToDoList#readme",
+  "devDependencies": {
+    "webpack": "^5.5.0",
+    "webpack-cli": "^4.2.0"
+  }
+}
