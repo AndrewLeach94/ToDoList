@@ -7,12 +7,11 @@ const projectList = [];
 
 //This class serves as the template for new task items
 const Task = class {
-    constructor(title, description, dueDate, priority, assignedProject) {
+    constructor(title, description, dueDate, priority) {
     this.title = title;
     this.description = description;
     this.dueDate = dueDate;
     this.priority = priority;
-    this.assignedProject = assignedProject;
     }
 }
 
@@ -44,8 +43,11 @@ const createNewProject = (title, description, dueDate) => {
     const addToProjectList = (() => projectList.push(newProject))();
 }
 
-//this function creates the "General" project which is default project tasks get added to
-const createDefaultProject = (() => createNewProject("General", "Unorganized tasks"))();
+//this function creates the "General" project which is the default project tasks get added to
+const createDefaultProject = (() => createNewProject("Miscellaneous", "Unorganized tasks"))();
+
+//this function assigns tasks to projects
+const assignTasktoProject = (project, task) => (project.tasks).push(task);
 
 
 
@@ -54,5 +56,5 @@ const createDefaultProject = (() => createNewProject("General", "Unorganized tas
 
 
 
-export { createNewTask, taskList, projectList, createNewProject }
+export { createNewTask, taskList, projectList, createNewProject, assignTasktoProject }
 
