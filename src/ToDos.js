@@ -7,19 +7,19 @@ const projectList = [];
 
 //This class serves as the template for new task items
 const Task = class {
-    constructor(title, description, dueDate, priority) {
+    constructor(title, description, dueDate, highPriority) {
     this.title = title;
     this.description = description;
     this.dueDate = dueDate;
-    this.priority = priority;
+    this.highPriority = highPriority;
     }
 }
 
 //This function is responsible for creating the new task objectd\s
-const createNewTask = (title, description, dueDate, priority) => {
+const createNewTask = (title, description, dueDate, highPriority) => {
     
     //this constructs the new object
-    const newTask = new Task(title, description, dueDate, priority);
+    const newTask = new Task(title, description, dueDate, highPriority);
 
     const addToTaskList = (() => taskList.push(newTask))();
 

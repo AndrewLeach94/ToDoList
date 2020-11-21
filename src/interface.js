@@ -31,6 +31,34 @@ export const updateProjectsNav = () => {
 }
 //this function handles the UI when a user wants to create a new task 
 const triggerNewTaskPrompt = () => {
+    
+    //this function submits the newly created tasks 
+    const submitNewTask = () => {
+        //this function finds the priority level to be passed to the next function
+        const getPriority = () => {
+            if ((createModal.inputPriorityHigh).checked == true) {
+                return true;
+            } 
+            else {
+                return false;
+            }
+        }
+        
+        createNewTask(
+            (createModal.inputTitle).value,
+            (createModal.inputDescription).value,
+            (createModal.inputDueDate).value,
+            getPriority()
+            );
+        
+        const removeModal = (() => {
+            createModal.modalContainer.remove();
+        } )();
+
+        console.table(taskList);
+    }
+
+    //this function creates the modal for the user to create a new task
     const createModal = (() => {
         const modalContainer = document.createElement("div");
         modalContainer.className = "modal_container";
@@ -63,19 +91,74 @@ const triggerNewTaskPrompt = () => {
         inputDueDate.className = "input_text";
         modalContainer.appendChild(inputDueDate);
 
-        const inputPriority = document.createElement("input");
-        inputPriority.type = "datalist";
-        inputPriority.placeholder = "Priority";
-        inputPriority.id = "input_priority";
-        inputPriority.className = "input_dropdown";
-        modalContainer.appendChild(inputPriority);
+        // priority inputs
+        const inputPriorityNormal = document.createElement("input");
+        inputPriorityNormal.type = "radio";
+        inputPriorityNormal.id = "input_priority-normal";
+        inputPriorityNormal.className = "input_radio";
+        inputPriorityNormal.value = "Normal";
+        inputPriorityNormal.name = "priority";
+        modalContainer.appendChild(inputPriorityNormal);
 
+        const labelPriorityNormal = document.createElement("Label");
+        labelPriorityNormal.id = "label_priority-normal";
+        labelPriorityNormal.for = "Normal";
+        labelPriorityNormal.textContent = "Normal";
+        modalContainer.appendChild(labelPriorityNormal);
+
+        const inputPriorityHigh = document.createElement("input");
+        inputPriorityHigh.type = "radio";
+        inputPriorityHigh.id = "input_priority";
+        inputPriorityHigh.className = "input_radio";
+        inputPriorityHigh.value = "high";
+        inputPriorityHigh.name = "priority";
+        modalContainer.appendChild(inputPriorityHigh);
+
+        const labelPriorityHigh = document.createElement("Label");
+        labelPriorityHigh.id = "label_priority-high";
+        labelPriorityHigh.for = "high";
+        labelPriorityHigh.textContent = "High";
+        modalContainer.appendChild(labelPriorityHigh);
+
+        // this function creates the project selection input
+        const generateProjectSelection = (() => {   
+            const projectSelector = document.createElement("input");
+            projectSelector.setAttribute("list", "projects-data"); // only way I could find to add list attribute with JS
+            projectSelector.className = "input_text";
+            projectSelector.id = "project-selector";
+            modalContainer.appendChild(projectSelector);
+
+            // create the datalist to populate dynamically with the user's projects
+            const projectData = document.createElement("datalist");
+            projectData.id = "projects-data";
+            modalContainer.appendChild(projectData)
+
+            const populateOptions = (() => {
+                projectList.forEach(element => {
+                    const newOption = document.createElement("option");
+                    newOption.value = element.title;
+                    projectData.appendChild(newOption);    
+                })
+            })()
+
+        })()
+
+        const submitButton = document.createElement("button");
+        submitButton.type = "button";
+        submitButton.textContent = "Create Task";
+        submitButton.id = "button_submit-task"
+        submitButton.addEventListener("click", submitNewTask);
+        modalContainer.appendChild(submitButton);
+
+        return { modalContainer, inputTitle, inputDescription, inputDueDate, inputPriorityNormal, inputPriorityHigh, submitButton };
 
     })();
+
 }
 
 // ------------------------Event Listeners ----------------------------------------------------
 const newTaskButton = document.querySelector("#button_new-task");
 
 newTaskButton.addEventListener("click", triggerNewTaskPrompt);
+
 
