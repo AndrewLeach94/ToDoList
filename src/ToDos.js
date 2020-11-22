@@ -12,6 +12,7 @@ const Task = class {
     this.description = description;
     this.dueDate = dueDate;
     this.highPriority = highPriority;
+    this.completed = false;
     }
 }
 
@@ -30,10 +31,9 @@ const createNewTask = (title, description, dueDate, highPriority) => {
 //----------------------------Projects------------------------------------------------------------------
 
 const Project = class {
-    constructor(title, description, dueDate) {
+    constructor(title, description) {
         this.title = title;
         this.description = description;
-        this.dueDate = dueDate;
         this.tasks = [];
     }
 }

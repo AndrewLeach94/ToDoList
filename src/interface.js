@@ -180,9 +180,68 @@ const triggerNewTaskPrompt = () => {
 
 }
 
+const triggerNewProjectPrompt = () => {
+        //this function submits the newly created project 
+        const submitNewProject = () => {
+            const newProject = createNewProject((createModal.inputTitle).value, (createModal.inputDescription).value);
+
+            console.table(projectList);
+
+            const removeModal = (() => createModal.modalContainer.remove())();
+
+
+            //update the projects nav bar
+            
+            const updateNavigation = (() => {
+                updateProjectsNav();
+            })();
+        }
+
+        //this function creates the modal for the user to create a new task
+        const createModal = (() => {
+            const modalContainer = document.createElement("div");
+            modalContainer.className = "modal_container";
+            modalContainer.id = "modal_project";
+            document.body.appendChild(modalContainer);
+    
+            const modalHeading = document.createElement("h3");
+            modalHeading.className = "modal_heading";
+            modalHeading.textContent = "Create a New Project";
+            modalContainer.appendChild(modalHeading);
+    
+            //this code creates the inputs
+            const inputTitle = document.createElement("input");
+            inputTitle.type = "text";
+            inputTitle.placeholder = "project Name";
+            inputTitle.id = "input_title";
+            inputTitle.className = "input_text";
+            modalContainer.appendChild(inputTitle);
+    
+            const inputDescription = document.createElement("textarea");
+            inputDescription.placeholder = "Description";
+            inputDescription.id = "input_description";
+            inputDescription.className = "input_text";
+            modalContainer.appendChild(inputDescription);
+    
+            
+            const submitButton = document.createElement("button");
+            submitButton.type = "button";
+            submitButton.textContent = "Create project";
+            submitButton.id = "button_submit-project"
+            submitButton.addEventListener("click", submitNewProject);
+            modalContainer.appendChild(submitButton);
+
+            return { modalContainer, inputTitle, inputDescription };
+    
+        })();
+    
+}
+
 // ------------------------Event Listeners ----------------------------------------------------
 const newTaskButton = document.querySelector("#button_new-task");
+const newProjectButton = document.querySelector("#button_new-project");
 
 newTaskButton.addEventListener("click", triggerNewTaskPrompt);
+newProjectButton.addEventListener("click", triggerNewProjectPrompt);
 
 
