@@ -23,6 +23,8 @@ const createNewTask = (title, description, dueDate, highPriority) => {
 
     const addToTaskList = (() => taskList.push(newTask))();
 
+    return newTask;
+
 }
 
 //----------------------------Projects------------------------------------------------------------------

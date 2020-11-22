@@ -1,10 +1,15 @@
 // this module handles all the code related to handling the UI
 import { taskList, createNewTask, projectList, createNewProject } from './ToDos.js';
 
-export const updateProjectsNav = () => {
+export const updateProjectsNav = () => {    
+    
     const projectNav = document.querySelector("#project-list");
+    //reset the navigation
+    while (projectNav.firstChild) {
+        projectNav.removeChild(projectNav.firstChild);
+    }
 
-    //loop through project array to create buttons lsting the project titls
+    //loop through project array to create divs lsting the project titls
     projectList.forEach(element => {
         const newProject = document.createElement("ul");
         newProject.id = `project-selector-${element.title}`;
@@ -13,18 +18,19 @@ export const updateProjectsNav = () => {
         projectNav.appendChild(newProject);
 
         const appendTasks = (() => {
+            const tasks = element.tasks;
         // loop through the array of tasks and append each task to its respected project
-            projectList.forEach(element => {
-                if ((element.tasks).length != 0) {
-                    const newTask = document.createElement("li");
-                    newTask.class = "project-selector-task";
-                    newTask.id = `project-task-${element.title}`;
-                    newTask.textContent = element.title;
+            if (tasks.length != 0) {
+                tasks.forEach(taskElement => {
+                    const appendTask = document.createElement("li");
+                    appendTask.class = "project-selector-task";
+                    appendTask.id = `project-task-${taskElement.title}`;
+                    appendTask.textContent = taskElement.title;
 
                     // nest task in project list
-                    newProject.appendChild(newTask); 
-                }
-            })    
+                    newProject.appendChild(appendTask); 
+                })
+            }
     })();
     });
     
@@ -44,16 +50,34 @@ const triggerNewTaskPrompt = () => {
             }
         }
         
-        createNewTask(
-            (createModal.inputTitle).value,
-            (createModal.inputDescription).value,
-            (createModal.inputDueDate).value,
-            getPriority()
-            );
+        const newTask = createNewTask(
+                        (createModal.inputTitle).value,
+                        (createModal.inputDescription).value,
+                        (createModal.inputDueDate).value,
+                        getPriority()
+                        );
         
+        //this function pushes the task to the project's tasks array
+        const assignTasktoProject = (() => {
+            //store the user's selected project
+            const selectedProject = document.querySelector("#project-selector").value;
+            
+            //locate the requested project using the user's input
+            const requestedProject = projectList.find(element => element.title == selectedProject);
+
+            //push the task to the project's array
+            (requestedProject.tasks).push(newTask);
+        })();
+
         const removeModal = (() => {
             createModal.modalContainer.remove();
         } )();
+
+        //update the projects nav bar
+        
+        const updateNavigation = (() => {
+            updateProjectsNav();
+        })();
 
         console.table(taskList);
     }
