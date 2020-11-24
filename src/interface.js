@@ -1,6 +1,7 @@
 // this module handles all the code related to handling the UI
 import { taskList, createNewTask, projectList, createNewProject } from './ToDos.js';
 
+//------------------------------------------------nav bar logic----------------------------------------------
 export const updateProjectsNav = () => {    
     
     const projectNav = document.querySelector("#project-list");
@@ -32,6 +33,13 @@ export const updateProjectsNav = () => {
                 })
             }
     })();
+        //this function applies the event listener to update the main section on-click
+        const applyEventListeners = (() => {
+            
+            newProject.addEventListener("click", () => {
+                updateProjectViewer(element);
+            })
+        })();
     });
     
 }
@@ -79,7 +87,6 @@ const triggerNewTaskPrompt = () => {
             updateProjectsNav();
         })();
 
-        console.table(taskList);
     }
 
     //this function creates the modal for the user to create a new task
@@ -236,6 +243,132 @@ const triggerNewProjectPrompt = () => {
         })();
     
 }
+
+// --------------------------------main content section logic-----------------------------------------
+
+//this function updates the main section. It receives the project object
+const updateProjectViewer = (activeProject) => {
+    const contentArea = document.querySelector("#content-area");
+
+    //this function preforms the initial reset when a new project is selected
+    const resetContentArea = (() => {
+        while (contentArea.firstChild) {
+            contentArea.removeChild(contentArea.firstChild);
+        }    
+    })();
+    
+    const displayHeading = (() => {
+        const heading = document.createElement("h2");
+        heading.className = "project-heading";
+        heading.textContent = activeProject.title;
+        contentArea.appendChild(heading);
+    })();
+
+    const displayDescription = (() => {
+        const description = document.createElement("p");
+        description.className = "project-description";
+        description.textContent = activeProject.description;
+        contentArea.appendChild(description);
+
+    })();
+
+    const createContextMenus = (e) => {
+        console.log("working");
+        console.log( e.clientX, e.clientY )
+        //prevent the default browser context menu from appearing 
+        e.preventDefault();
+
+        const buildContextMenu = (() => {
+            const contextMenu = document.createElement("ul");
+            contextMenu.className = "context-menu";
+            document.body.appendChild(contextMenu);
+
+            //build context menu items
+            const markComplete = document.createElement("li");
+            markComplete.id = "context_item-complete";
+            markComplete.className = "context_item";
+            markComplete.textContent = "Mark as Complete";
+            contextMenu.appendChild(markComplete);
+            
+            const changePriority = document.createElement("li");
+            changePriority.id = "context_item-priority";
+            changePriority.className = "context_item";
+            changePriority.textContent = "Change to High Priority"
+            contextMenu.appendChild(changePriority);
+
+            
+            const deleteTask = document.createElement("li");
+            deleteTask.id = "context_item-delete";
+            deleteTask.className = "context_item";
+            deleteTask.textContent = "Delete Task";
+            contextMenu.appendChild(deleteTask);
+
+            //position the context menu on user's mouse click
+            const positionMenu = (() => {
+                contextMenu.style.top = `${e.clientY - 20}px`;
+                contextMenu.style.left = `${e.clientX - 20}px`;
+            })();
+        })();
+
+    };
+
+
+    const displayTasks = (() => {
+        //create the container
+
+        const createParentContainers = (() => {
+            const highPriorityTaskContainer = document.createElement("div");
+            highPriorityTaskContainer.className = "tasks_container-high";
+            contentArea.appendChild(highPriorityTaskContainer);    
+            
+            const normalPriorityTaskContainer = document.createElement("div");
+            normalPriorityTaskContainer.className = "tasks_container-normal";
+            contentArea.appendChild(normalPriorityTaskContainer);    
+            return { highPriorityTaskContainer, normalPriorityTaskContainer };
+        })();
+
+
+        //add task information to the container
+        (activeProject.tasks).forEach(element => {
+            
+            const taskContainer = document.createElement("div");
+            taskContainer.className = "task-container";
+            (createParentContainers.normalPriorityTaskContainer).appendChild(taskContainer);
+
+            const titleContainer = document.createElement("div");
+            titleContainer.className = "tasks_container-title";
+            taskContainer.appendChild(titleContainer);                 
+
+            const createHeading = (() => {
+                const title = document.createElement("h4");
+                title.className = "task-title";
+                title.textContent = element.title;    
+                titleContainer.appendChild(title);
+
+            })();
+
+            const createDescription = (() => {
+                const description = document.createElement("p");
+                description.className = "task-description";
+                description.textContent = element.description;
+                titleContainer.appendChild(description);
+            })();
+            
+            const createDueDate = (() => {
+                const dueDate = document.createElement("p");
+                dueDate.className = "task-due-date";
+                dueDate.textContent = `Due: ${element.dueDate}`;
+                taskContainer.appendChild(dueDate);
+            })();
+
+            const applyContextMenuListeners = (() => {
+                taskContainer.addEventListener("contextmenu", createContextMenus);
+            })();
+        })
+    })();
+
+}
+
 
 // ------------------------Event Listeners ----------------------------------------------------
 const newTaskButton = document.querySelector("#button_new-task");
