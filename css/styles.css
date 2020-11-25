@@ -6,6 +6,7 @@
 body {
     font-size: 16px;
     line-height: 1.5;
+    height: 100vh;
 }
 
 header {
@@ -34,7 +35,7 @@ header {
     z-index: 200;
 }
 
-.context-menu {
+#context-menu {
     position: fixed;
     z-index: 999;
     height: 100px;
