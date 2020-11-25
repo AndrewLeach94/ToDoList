@@ -1,7 +1,8 @@
 //this module focuses on the logic revolving around tasks and projects
 
-const taskList = [];
-const projectList = [];
+export const taskList = [];
+export const projectList = [];
+export const completedProjects = [];
 
 //------------------------------------Tasks--------------------------------------------------------------
 
@@ -17,7 +18,7 @@ const Task = class {
 }
 
 //This function is responsible for creating the new task objectd\s
-const createNewTask = (title, description, dueDate, highPriority) => {
+export const createNewTask = (title, description, dueDate, highPriority) => {
     
     //this constructs the new object
     const newTask = new Task(title, description, dueDate, highPriority);
@@ -27,6 +28,19 @@ const createNewTask = (title, description, dueDate, highPriority) => {
     return newTask;
 
 }
+
+//This function marks a project as complete
+
+export const markComplete = (task) => {
+    task.completed = true;
+}
+
+//This function changes marks a project as incomplete
+
+export const markIncomplete = (task) => {
+    task.completed = false;
+}
+
 
 //----------------------------Projects------------------------------------------------------------------
 
@@ -38,7 +52,7 @@ const Project = class {
     }
 }
 
-const createNewProject = (title, description, dueDate) => {
+export const createNewProject = (title, description, dueDate) => {
     //this constructs the new object
     const newProject = new Project(title, description, dueDate);
 
@@ -49,14 +63,4 @@ const createNewProject = (title, description, dueDate) => {
 const createDefaultProject = (() => createNewProject("Miscellaneous", "Unorganized tasks"))();
 
 //this function assigns tasks to projects
-const assignTasktoProject = (project, task) => (project.tasks).push(task);
-
-
-
-
-
-
-
-
-export { createNewTask, taskList, projectList, createNewProject, assignTasktoProject }
-
+export const assignTasktoProject = (project, task) => (project.tasks).push(task);

@@ -1,5 +1,5 @@
 // this module handles all the code related to handling the UI
-import { taskList, createNewTask, projectList, createNewProject } from './ToDos.js';
+import { taskList, createNewTask, projectList, createNewProject, markComplete, markIncomplete } from './ToDos.js';
 
 //------------------------------------------------nav bar logic----------------------------------------------
 export const updateProjectsNav = () => {    
@@ -192,8 +192,6 @@ const triggerNewProjectPrompt = () => {
         const submitNewProject = () => {
             const newProject = createNewProject((createModal.inputTitle).value, (createModal.inputDescription).value);
 
-            console.table(projectList);
-
             const removeModal = (() => createModal.modalContainer.remove())();
 
 
@@ -272,15 +270,20 @@ const updateProjectViewer = (activeProject) => {
 
     })();
 
-    const createContextMenus = (e) => {
-        console.log("working");
-        console.log( e.clientX, e.clientY )
+     const createContextMenu = (e) => {
         //prevent the default browser context menu from appearing 
         e.preventDefault();
 
+        //remove existing context menu
+        const removeContextMenu = () => (buildContextMenu.contextMenu).remove();
+
+        //store the clicked element for context menu referencing 
+        const selectedTaskTitle = (e.currentTarget).dataset.id;
+        console.log(selectedTaskTitle);
+
         const buildContextMenu = (() => {
             const contextMenu = document.createElement("ul");
-            contextMenu.className = "context-menu";
+            contextMenu.id = "context-menu";
             document.body.appendChild(contextMenu);
 
             //build context menu items
@@ -308,6 +311,57 @@ const updateProjectViewer = (activeProject) => {
                 contextMenu.style.top = `${e.clientY - 20}px`;
                 contextMenu.style.left = `${e.clientX - 20}px`;
             })();
+
+            const changeTaskPriority = (selectedTask) => {
+                //identify the task clcked on
+                const task = (activeProject.tasks).find(element => element.title == selectedTaskTitle);
+
+                //change task completed status
+                if ((task.completed == false) ? task.completed = true : task.completed = false);
+                console.log(task)
+
+                //update the UI
+                if (task.completed == true) {
+                    const completedSection = document.querySelector("#tasks_container-completed");
+
+                    //locate the task container in a nodelist
+                    const nodeList = document.querySelectorAll(`.task-container[data-id=${selectedTaskTitle}]`);
+                    
+                    //move the container in the nodelist to the completed section
+                    nodeList.forEach(element => {
+                        completedSection.appendChild(element);
+                    })
+
+                }
+            }
+
+            
+            const applyListeners = (() => {
+                //this function removes the context menu when the user clicks outside of it
+                const hideMenu = (() => {
+                    (document.body).addEventListener("click", hideContextMenu);
+                    
+                    function hideContextMenu(e){
+                        if (e.target.id != "context-menu" && e.target.className != "context_item") {
+                            removeContextMenu();
+                            (document.body).removeEventListener("click", hideContextMenu);
+                        }
+                    }
+                })();
+
+                //these functions add event listeners for the menu items
+                const markTaskComplete = (() => {
+                    changePriority.addEventListener("click", () => {
+                        changeTaskPriority();
+                    });
+                    
+                    // const markComplete = () => changeTaskPriority();
+                })();
+                
+            })();
+        
+
+            return { contextMenu };
         })();
 
     };
@@ -318,13 +372,20 @@ const updateProjectViewer = (activeProject) => {
 
         const createParentContainers = (() => {
             const highPriorityTaskContainer = document.createElement("div");
-            highPriorityTaskContainer.className = "tasks_container-high";
+            highPriorityTaskContainer.id = "tasks_container-high";
+            highPriorityTaskContainer.className = "tasks_container";
             contentArea.appendChild(highPriorityTaskContainer);    
             
             const normalPriorityTaskContainer = document.createElement("div");
-            normalPriorityTaskContainer.className = "tasks_container-normal";
+            normalPriorityTaskContainer.id = "tasks_container-normal";
+            highPriorityTaskContainer.className = "tasks_container";
             contentArea.appendChild(normalPriorityTaskContainer);    
-            return { highPriorityTaskContainer, normalPriorityTaskContainer };
+            
+            const completedContainer = document.createElement("div");
+            completedContainer.id = "tasks_container-completed";
+            highPriorityTaskContainer.className = "tasks_container";
+            contentArea.appendChild(completedContainer);    
+            return { highPriorityTaskContainer, normalPriorityTaskContainer, completedContainer };
         })();
 
 
@@ -333,6 +394,7 @@ const updateProjectViewer = (activeProject) => {
             
             const taskContainer = document.createElement("div");
             taskContainer.className = "task-container";
+            taskContainer.dataset.id = element.title; // used for context menu referencing
             (createParentContainers.normalPriorityTaskContainer).appendChild(taskContainer);
 
             const titleContainer = document.createElement("div");
@@ -362,7 +424,7 @@ const updateProjectViewer = (activeProject) => {
             })();
 
             const applyContextMenuListeners = (() => {
-                taskContainer.addEventListener("contextmenu", createContextMenus);
+                taskContainer.addEventListener("contextmenu", createContextMenu);
             })();
         })
     })();
