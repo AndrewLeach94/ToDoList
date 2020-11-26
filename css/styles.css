@@ -1,17 +1,32 @@
 :root {
     --surface-primary: white;
-    --surface-secondary: #FAFAFA
+    --surface-secondary: #FAFAFA;
+    --base-primary: #255C99;
 }
 
 body {
     font-size: 16px;
     line-height: 1.5;
     height: 100vh;
+    font-family: 'Open Sans', sans-serif;
+}
+
+:is(h1, h2, h3, h4, h5, h6) {
+    font-family: 'Gayathri', sans-serif;
+}
+
+h1 {
+    font-size: 1.3rem;
+    margin: 0;
 }
 
 header {
     display: flex;
     justify-content: space-around;
+    align-items: center;
+    background-color: var(--base-primary);
+    color: var(--surface-primary);
+    height: 50px;
 }
 
 #navigation-bar {
@@ -22,6 +37,8 @@ header {
     width: 20%;
     background-color: var(--surface-secondary);
     height: 100%;
+    border-right: solid 1px #80808021;
+    border-left: solid 1px #80808021;
 }
 
 #content-area {
