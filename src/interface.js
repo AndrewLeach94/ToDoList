@@ -1,5 +1,5 @@
 // this module handles all the code related to handling the UI
-import { taskList, createNewTask, projectList, createNewProject, markComplete, markIncomplete } from './ToDos.js';
+import { taskList, createNewTask, projectList, createNewProject } from './ToDos.js';
 
 //------------------------------------------------nav bar logic----------------------------------------------
 export const updateProjectsNav = () => {    
@@ -274,8 +274,17 @@ const updateProjectViewer = (activeProject) => {
         //prevent the default browser context menu from appearing 
         e.preventDefault();
 
-        //remove existing context menu
+        //this function removes context menu
         const removeContextMenu = () => (buildContextMenu.contextMenu).remove();
+
+        //this function checks and removes the existing context menu if one is already present
+        const removeDuplicateContextMenu = (() => {
+            const oldMenu = document.getElementById("context-menu");
+
+            if (oldMenu != null) {
+                oldMenu.remove();
+            }
+        })();
 
         //store the clicked element for context menu referencing 
         const selectedTaskTitle = (e.currentTarget).dataset.id;
@@ -290,13 +299,23 @@ const updateProjectViewer = (activeProject) => {
             const markComplete = document.createElement("li");
             markComplete.id = "context_item-complete";
             markComplete.className = "context_item";
-            markComplete.textContent = "Mark as Complete";
+            //this function placeholder text based on completion status
+            const setCompletionPlaceHolderText = (() => {
+                const task = (activeProject.tasks).find(element => element.title == selectedTaskTitle);
+                if ((task.completed == false) ? markComplete.textContent = "Mark as Complete" : markComplete.textContent = "Mark as Incomplete");
+            })();
             contextMenu.appendChild(markComplete);
             
             const changePriority = document.createElement("li");
             changePriority.id = "context_item-priority";
             changePriority.className = "context_item";
-            changePriority.textContent = "Change to High Priority"
+            //this function creates placeholder text based on completion status
+            const setPriorityPlaceHolderText = (() => {
+                const task = (activeProject.tasks).find(element => element.title == selectedTaskTitle);
+                if ((task.highPriority == false) ? changePriority.textContent = "Make High Priority" : changePriority.textContent = "Make Normal Priority");
+            })();
+            
+            // changePriority.textContent = "Change to High Priority"
             contextMenu.appendChild(changePriority);
 
             
@@ -312,13 +331,12 @@ const updateProjectViewer = (activeProject) => {
                 contextMenu.style.left = `${e.clientX - 20}px`;
             })();
 
-            const changeTaskPriority = (selectedTask) => {
+            const changeCompleteStatus = () => {
                 //identify the task clcked on
                 const task = (activeProject.tasks).find(element => element.title == selectedTaskTitle);
 
                 //change task completed status
                 if ((task.completed == false) ? task.completed = true : task.completed = false);
-                console.log(task)
 
                 //update the UI
                 if (task.completed == true) {
@@ -333,6 +351,62 @@ const updateProjectViewer = (activeProject) => {
                     })
 
                 }
+            }
+
+            const changeTaskPriority = () => {
+                const task = (activeProject.tasks).find(element => element.title == selectedTaskTitle);
+                
+                //this function updates the UI
+                const updatePosition = () => {
+                    const highPriorityContainer = document.querySelector("#tasks_container-high");
+                    const normalPriorityContainer = document.querySelector("#tasks_container-normal");
+
+                    if(task.highPriority == true) {
+                        //locate the task container in a nodelist
+                        const nodeList = document.querySelectorAll(`.task-container[data-id=${selectedTaskTitle}]`);
+                        
+                        //move the container in the nodelist to the completed section
+                        nodeList.forEach(element => {
+                            highPriorityContainer.appendChild(element);
+                        })
+
+                    }
+
+                    else {
+                        //locate the task container in a nodelist
+                        const nodeList = document.querySelectorAll(`.task-container[data-id=${selectedTaskTitle}]`);
+
+                        //move the container in the nodelist to the completed section
+                        nodeList.forEach(element => {
+                            normalPriorityContainer.appendChild(element);
+                        })
+
+                    }
+                }
+                
+                if (task.highPriority == false) {
+                    task.highPriority = true;
+                    updatePosition();
+                }
+
+                else {
+                    task.highPriority = false;
+                    updatePosition();
+                }
+            }
+
+            const deleteSelectedTask =() => {
+                const taskIndex = (activeProject.tasks).findIndex(element => element.title == selectedTaskTitle);
+                
+                //remove the task
+                (activeProject.tasks).splice(taskIndex, 1);
+                
+
+                //update the UI
+                const updateUI = (() => {
+                    updateProjectsNav()
+                    updateProjectViewer(activeProject);
+                })();
             }
 
             
@@ -351,11 +425,25 @@ const updateProjectViewer = (activeProject) => {
 
                 //these functions add event listeners for the menu items
                 const markTaskComplete = (() => {
-                    changePriority.addEventListener("click", () => {
-                        changeTaskPriority();
+                    markComplete.addEventListener("click", () => {
+                        changeCompleteStatus();
+                        removeContextMenu();
                     });
                     
-                    // const markComplete = () => changeTaskPriority();
+                })();
+
+                const modifyTaskPriority = (() => {
+                    changePriority.addEventListener("click", () => {
+                        changeTaskPriority();
+                        removeContextMenu();
+                    })
+                })();
+
+                const removeTask = (() => {
+                    deleteTask.addEventListener("click", () => {
+                        deleteSelectedTask();
+                        removeContextMenu();
+                    })
                 })();
                 
             })();

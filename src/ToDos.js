@@ -29,17 +29,6 @@ export const createNewTask = (title, description, dueDate, highPriority) => {
 
 }
 
-//This function marks a project as complete
-
-export const markComplete = (task) => {
-    task.completed = true;
-}
-
-//This function changes marks a project as incomplete
-
-export const markIncomplete = (task) => {
-    task.completed = false;
-}
 
 
 //----------------------------Projects------------------------------------------------------------------
