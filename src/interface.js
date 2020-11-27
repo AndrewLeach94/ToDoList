@@ -50,7 +50,7 @@ const triggerNewTaskPrompt = () => {
     const submitNewTask = () => {
         //this function finds the priority level to be passed to the next function
         const getPriority = () => {
-            if ((createModal.inputPriorityHigh).checked == true) {
+            if ((createModal.prioritySwitch).checked == true) {
                 return true;
             } 
             else {
@@ -117,45 +117,42 @@ const triggerNewTaskPrompt = () => {
 
         const inputDueDate = document.createElement("input");
         inputDueDate.type = "date";
-        inputDueDate.placeholder = "Task Name";
+        //this function creates the current date to use as the default due date
+        const getCurrentDate = () => {
+            let today = new Date();
+
+            const day = String(today.getDate()).padStart(2, '0');
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const year = today.getFullYear();
+
+            today = `${year}-${month}-${day}`;
+            return today
+        };
+        inputDueDate.value = getCurrentDate();
         inputDueDate.id = "input_duedate";
-        inputDueDate.className = "input_text";
+        inputDueDate.className = "input_date";
         modalContainer.appendChild(inputDueDate);
 
         // priority inputs
-        const inputPriorityNormal = document.createElement("input");
-        inputPriorityNormal.type = "radio";
-        inputPriorityNormal.id = "input_priority-normal";
-        inputPriorityNormal.className = "input_radio";
-        inputPriorityNormal.value = "Normal";
-        inputPriorityNormal.name = "priority";
-        modalContainer.appendChild(inputPriorityNormal);
 
-        const labelPriorityNormal = document.createElement("Label");
-        labelPriorityNormal.id = "label_priority-normal";
-        labelPriorityNormal.for = "Normal";
-        labelPriorityNormal.textContent = "Normal";
-        modalContainer.appendChild(labelPriorityNormal);
+        const prioritySwitchLabel = document.createElement("label");
+        prioritySwitchLabel.textContent = "Make High Priority?";
+        prioritySwitchLabel.className = "switch-wrapper";
+        modalContainer.appendChild(prioritySwitchLabel);
 
-        const inputPriorityHigh = document.createElement("input");
-        inputPriorityHigh.type = "radio";
-        inputPriorityHigh.id = "input_priority";
-        inputPriorityHigh.className = "input_radio";
-        inputPriorityHigh.value = "high";
-        inputPriorityHigh.name = "priority";
-        modalContainer.appendChild(inputPriorityHigh);
-
-        const labelPriorityHigh = document.createElement("Label");
-        labelPriorityHigh.id = "label_priority-high";
-        labelPriorityHigh.for = "high";
-        labelPriorityHigh.textContent = "High";
-        modalContainer.appendChild(labelPriorityHigh);
+        const prioritySwitch = document.createElement("input")
+        prioritySwitch.type = "checkbox";
+        prioritySwitch.id = "input_priority";
+        prioritySwitch.className = "checkbox";
+        prioritySwitch.value = "high-priority";
+        prioritySwitchLabel.appendChild(prioritySwitch);
 
         // this function creates the project selection input
         const generateProjectSelection = (() => {   
             const projectSelector = document.createElement("input");
             projectSelector.setAttribute("list", "projects-data"); // only way I could find to add list attribute with JS
-            projectSelector.className = "input_text";
+            projectSelector.className = "input_dropdown";
+            projectSelector.placeholder = "Select Project";
             projectSelector.id = "project-selector";
             modalContainer.appendChild(projectSelector);
 
@@ -177,11 +174,12 @@ const triggerNewTaskPrompt = () => {
         const submitButton = document.createElement("button");
         submitButton.type = "button";
         submitButton.textContent = "Create Task";
+        submitButton.className = "modal_button-primary";
         submitButton.id = "button_submit-task"
         submitButton.addEventListener("click", submitNewTask);
         modalContainer.appendChild(submitButton);
 
-        return { modalContainer, inputTitle, inputDescription, inputDueDate, inputPriorityNormal, inputPriorityHigh, submitButton };
+        return { modalContainer, inputTitle, inputDueDate, inputDescription, prioritySwitch, submitButton };
 
     })();
 
