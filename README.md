@@ -3,7 +3,7 @@
 As a user, I want an keep track of projects and tasks. I want to be able to prioritize tasks, check them off as complete, and to delete tasks as well. 
 
 ### Live Link
-
+https://andrewleach94.github.io/ToDoList/
 
 #### Overview
 This project utilizes Webpack. Install webpack, and once installed run the following to run the bundler:
