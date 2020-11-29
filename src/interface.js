@@ -14,7 +14,7 @@ export const updateProjectsNav = () => {
     projectList.forEach(element => {
         const newProject = document.createElement("ul");
         newProject.id = `project-selector-${element.title}`;
-        newProject.class = "project-selector";
+        newProject.className = "project-selector";
         newProject.textContent = element.title;
         projectNav.appendChild(newProject);
 
@@ -77,15 +77,22 @@ const triggerNewTaskPrompt = () => {
             (requestedProject.tasks).push(newTask);
         })();
 
+        //update the projects nav bar
+
+        const updateUI = (() => {
+            updateProjectsNav();
+
+            //update the project viewer with the project the user selected
+            const projectName = document.querySelector("#project-selector").value;
+            
+            const selectedProject = projectList.find(element => element.title == projectName)
+            updateProjectViewer(selectedProject);
+        })();
+        
+
         const removeModal = (() => {
             createModal.modalContainer.remove();
         } )();
-
-        //update the projects nav bar
-        
-        const updateNavigation = (() => {
-            updateProjectsNav();
-        })();
 
     }
 
@@ -128,6 +135,7 @@ const triggerNewTaskPrompt = () => {
             today = `${year}-${month}-${day}`;
             return today
         };
+
         inputDueDate.value = getCurrentDate();
         inputDueDate.id = "input_duedate";
         inputDueDate.className = "input_date";
@@ -149,8 +157,7 @@ const triggerNewTaskPrompt = () => {
 
         // this function creates the project selection input
         const generateProjectSelection = (() => {   
-            const projectSelector = document.createElement("input");
-            projectSelector.setAttribute("list", "projects-data"); // only way I could find to add list attribute with JS
+            const projectSelector = document.createElement("select");
             projectSelector.className = "input_dropdown";
             projectSelector.placeholder = "Select Project";
             projectSelector.id = "project-selector";
@@ -164,8 +171,8 @@ const triggerNewTaskPrompt = () => {
             const populateOptions = (() => {
                 projectList.forEach(element => {
                     const newOption = document.createElement("option");
-                    newOption.value = element.title;
-                    projectData.appendChild(newOption);    
+                    newOption.textContent = element.title;
+                    projectSelector.appendChild(newOption);    
                 })
             })()
 
@@ -178,6 +185,15 @@ const triggerNewTaskPrompt = () => {
         submitButton.id = "button_submit-task"
         submitButton.addEventListener("click", submitNewTask);
         modalContainer.appendChild(submitButton);
+        
+        const cancelButton = document.createElement("button");
+        cancelButton.type = "button";
+        cancelButton.textContent = "Cancel";
+        cancelButton.className = "modal_button-secondary";
+        cancelButton.id = "button_cancel-task"
+        cancelButton.addEventListener("click", () => modalContainer.remove());
+        modalContainer.appendChild(cancelButton);
+
 
         return { modalContainer, inputTitle, inputDueDate, inputDescription, prioritySwitch, submitButton };
 
@@ -215,7 +231,7 @@ const triggerNewProjectPrompt = () => {
             //this code creates the inputs
             const inputTitle = document.createElement("input");
             inputTitle.type = "text";
-            inputTitle.placeholder = "project Name";
+            inputTitle.placeholder = "Project Name";
             inputTitle.id = "input_title";
             inputTitle.className = "input_text";
             modalContainer.appendChild(inputTitle);
@@ -229,10 +245,19 @@ const triggerNewProjectPrompt = () => {
             
             const submitButton = document.createElement("button");
             submitButton.type = "button";
-            submitButton.textContent = "Create project";
+            submitButton.textContent = "Create Project";
             submitButton.id = "button_submit-project"
+            submitButton.className = "modal_button-primary"
             submitButton.addEventListener("click", submitNewProject);
             modalContainer.appendChild(submitButton);
+            
+            const cancelButton = document.createElement("button");
+            cancelButton.type = "button";
+            cancelButton.textContent = "Cancel";
+            cancelButton.id = "button_cancel-project"
+            cancelButton.className = "modal_button-secondary"
+            cancelButton.addEventListener("click", () => modalContainer.remove());
+            modalContainer.appendChild(cancelButton);
 
             return { modalContainer, inputTitle, inputDescription };
     
@@ -243,7 +268,7 @@ const triggerNewProjectPrompt = () => {
 // --------------------------------main content section logic-----------------------------------------
 
 //this function updates the main section. It receives the project object
-const updateProjectViewer = (activeProject) => {
+export const updateProjectViewer = (activeProject) => {
     const contentArea = document.querySelector("#content-area");
 
     //this function preforms the initial reset when a new project is selected
@@ -286,7 +311,6 @@ const updateProjectViewer = (activeProject) => {
 
         //store the clicked element for context menu referencing 
         const selectedTaskTitle = (e.currentTarget).dataset.id;
-        console.log(selectedTaskTitle);
 
         const buildContextMenu = (() => {
             const contextMenu = document.createElement("ul");
@@ -346,6 +370,19 @@ const updateProjectViewer = (activeProject) => {
                     //move the container in the nodelist to the completed section
                     nodeList.forEach(element => {
                         completedSection.appendChild(element);
+                    })
+
+                }
+
+                else {
+                    const normalSection = document.querySelector("#tasks_container-normal");
+
+                    //locate the task container in a nodelist
+                    const nodeList = document.querySelectorAll(`.task-container[data-id=${selectedTaskTitle}]`);
+                    
+                    //move the container in the nodelist to the completed section
+                    nodeList.forEach(element => {
+                        normalSection.appendChild(element);
                     })
 
                 }
@@ -457,15 +494,31 @@ const updateProjectViewer = (activeProject) => {
         //create the container
 
         const createParentContainers = (() => {
+            const highPriorityHeading = document.createElement("h5");
+            highPriorityHeading.textContent = "High Priority";
+            highPriorityHeading.className = "priority-heading";
+            highPriorityHeading.id = "priority-heading-high";
+            contentArea.appendChild(highPriorityHeading);
+
             const highPriorityTaskContainer = document.createElement("div");
             highPriorityTaskContainer.id = "tasks_container-high";
             highPriorityTaskContainer.className = "tasks_container";
-            contentArea.appendChild(highPriorityTaskContainer);    
+            contentArea.appendChild(highPriorityTaskContainer);
+            
+            const normalPriorityHeading = document.createElement("h5");
+            normalPriorityHeading.textContent = "Normal Priority";
+            normalPriorityHeading.className = "priority-heading";
+            contentArea.appendChild(normalPriorityHeading);
             
             const normalPriorityTaskContainer = document.createElement("div");
             normalPriorityTaskContainer.id = "tasks_container-normal";
             highPriorityTaskContainer.className = "tasks_container";
             contentArea.appendChild(normalPriorityTaskContainer);    
+
+            const completedHeading = document.createElement("h5");
+            completedHeading.textContent = "Completed";
+            completedHeading.className = "priority-heading";
+            contentArea.appendChild(completedHeading);
             
             const completedContainer = document.createElement("div");
             completedContainer.id = "tasks_container-completed";
@@ -481,7 +534,19 @@ const updateProjectViewer = (activeProject) => {
             const taskContainer = document.createElement("div");
             taskContainer.className = "task-container";
             taskContainer.dataset.id = element.title; // used for context menu referencing
-            (createParentContainers.normalPriorityTaskContainer).appendChild(taskContainer);
+            
+            //place the tasks in their right containers based on completion status and priority
+            if (element.highPriority == true ) {
+                (createParentContainers.highPriorityTaskContainer).appendChild(taskContainer);
+            }
+            
+            else if (element.completed == false) {
+                (createParentContainers.normalPriorityTaskContainer).appendChild(taskContainer);
+            }
+
+            else {
+                (createParentContainers.completedContainer).appendChild(taskContainer);
+            }
 
             const titleContainer = document.createElement("div");
             titleContainer.className = "tasks_container-title";

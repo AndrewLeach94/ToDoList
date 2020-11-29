@@ -5,17 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>To-Do List</title>
     <link rel="preconnect" href="https://fonts.gstatic.com">
-<link href="https://fonts.googleapis.com/css2?family=Gayathri:wght@400;700&family=Open+Sans&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Gayathri:wght@400;700&family=Open+Sans:wght@300;400&display=swap" rel="stylesheet"> 
+    <script src="https://kit.fontawesome.com/19a9b1b335.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" type ="text/css" href="css/normalize.css">
     <link rel="stylesheet" type ="text/css" href="css/styles.css">
 </head>
 <body>
     <header>
-        <h1>To-Do App</h1>
-        <button type="button" id="button_new-task" class="button_CTA-secondary">New Task</button>
+        <h1>To-Do List</h1>
+        <button type="button" id="button_new-task" class="button_CTA-secondary">
+            <i class="fas fa-plus"></i> New Task
+        </button>
     </header>
     <nav id="navigation-bar">
-        <button type="button" id="button_new-project" class="button_CTA-primary">New Project</button>
+        <button type="button" id="button_new-project" class="modal_button-primary">
+            <i class="fas fa-plus"></i> New Project
+        </button>
         <h2>Projects</h2>
         <ul id="project-list"></ul>
     </nav>

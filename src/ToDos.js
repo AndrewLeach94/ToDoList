@@ -2,7 +2,6 @@
 
 export const taskList = [];
 export const projectList = [];
-export const completedProjects = [];
 
 //------------------------------------Tasks--------------------------------------------------------------
 
