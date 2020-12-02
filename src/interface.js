@@ -489,7 +489,6 @@ export const updateProjectViewer = (activeProject) => {
 
     };
 
-
     const displayTasks = (() => {
         //create the container
 
@@ -577,6 +576,7 @@ export const updateProjectViewer = (activeProject) => {
             const applyContextMenuListeners = (() => {
                 taskContainer.addEventListener("contextmenu", createContextMenu);
             })();
+
         })
     })();
 

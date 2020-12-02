@@ -251,6 +251,7 @@ input:checked[type="checkbox"]::before {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
     border-top: solid 1px #80808021;
     border-bottom: solid 1px #80808021;
 }
@@ -314,7 +315,3 @@ input:checked[type="checkbox"]::before {
     color: var(--surface-primary);
 }
 
-#context-menu li:first-child:hover {
-    background: #0080001c;
-    /* color: var(--surface-primary); */
-}
